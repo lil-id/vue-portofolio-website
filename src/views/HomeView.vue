@@ -12,7 +12,7 @@ export default {
 
   async created() {
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(`${API_URL}?per_page=${this.perPage}&page=${this.page}&sort=updated&direction=desc`);
       this.projects.push(...res.data);
     } catch (error) {
       console.log(error);

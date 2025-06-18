@@ -7,20 +7,59 @@ export default {
   data() {
     return {
       projects: [],
+      page: 1,
+      perPage: 10,
+      loading: false,
+      allLoaded: false, // to prevent endless requests
     };
   },
 
-  async created() {
-    try {
-      const res = await axios.get(API_URL);
-      this.projects.push(...res.data);
-    } catch (error) {
-      console.log(error);
-    }
+  mounted() {
+    this.loadProjects();
+
+    window.addEventListener("scroll", this.handleScroll);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  },
+
+  methods: {
+    async loadProjects() {
+      if (this.loading || this.allLoaded) return;
+
+      this.loading = true;
+      try {
+        const res = await axios.get(
+          `${API_URL}?per_page=${this.perPage}&page=${this.page}`
+        );
+        const data = res.data;
+
+        if (data.length === 0) {
+          this.allLoaded = true; // No more data
+        } else {
+          this.projects.push(...data);
+          this.page += 1;
+        }
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    handleScroll() {
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const threshold = document.body.offsetHeight - 100;
+
+      if (scrollPosition >= threshold) {
+        this.loadProjects();
+      }
+    },
   },
 };
 </script>
-<!-- eslint-disable vue/multi-word-component-names -->
+
 <template>
   <div class="background album py-5">
     <div class="container mb-2">
@@ -31,15 +70,13 @@ export default {
         there are also some learning resources"
       </p>
       <div id="card" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-        <div class="col" v-for="(key, value) in projects" :key="key">
+        <div class="col" v-for="project in projects" :key="project.id">
           <div class="card shadow-sm">
             <div class="card-body">
-              <h4>{{ this.projects[value].name }}</h4>
-              <p class="card-text">
-                {{ this.projects[value].description }}
-              </p>
+              <h4>{{ project.name }}</h4>
+              <p class="card-text">{{ project.description }}</p>
               <div class="d-flex justify-content-between align-items-center">
-                <RouterLink :to="`/project/${this.projects[value].id}`">
+                <RouterLink :to="`/project/${project.id}`">
                   <button type="button" class="btn btn-sm btn-success">
                     View Project
                   </button>
@@ -48,6 +85,16 @@ export default {
             </div>
           </div>
         </div>
+      </div>
+
+      <div v-if="loading" class="text-center my-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div v-if="allLoaded" class="text-center text-muted my-4">
+        <span>No more projects to load.</span>
       </div>
     </div>
   </div>
