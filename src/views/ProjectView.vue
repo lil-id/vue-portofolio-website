@@ -72,6 +72,11 @@ export default {
       <div id="card" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         <div class="col" v-for="project in projects" :key="project.id">
           <div class="card shadow-sm">
+            <img
+              class="image-card"
+              src="https://ih1.redbubble.net/image.4700837696.3089/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg"
+              alt="profile photo"
+            />
             <div class="card-body">
               <h4>{{ project.name }}</h4>
               <p class="card-text">{{ project.description }}</p>

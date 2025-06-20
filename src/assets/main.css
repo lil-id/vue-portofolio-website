@@ -15,6 +15,15 @@ a,
   transition: 0.4s;
 }
 
+.link-blog {
+  text-decoration: none; /* Removes underline */
+  color: blue; /* Sets the link color */
+}
+
+.link-blog:hover {
+  color: #0056b3; /* Changes color on hover */
+}
+
 @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);

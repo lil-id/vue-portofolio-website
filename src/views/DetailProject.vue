@@ -8,6 +8,8 @@ const API_URL_PROJECT = "https://api.github.com/users/lil-id/repos";
 export default {
   data() {
     return {
+      page: 1,
+      perPage: 100,
       users: {},
       projects: {},
     };
@@ -17,7 +19,9 @@ export default {
     try {
       const user = await axios.get(API_URL);
       this.users = user.data;
-      const project = await axios.get(API_URL_PROJECT);
+      const project = await axios.get(
+        `${API_URL_PROJECT}?per_page=${this.perPage}&page=${this.page}`
+      );
       this.projects = project.data;
     } catch (error) {
       console.log(error);
@@ -111,6 +115,42 @@ export default {
                     />
                     <div class="invalid-feedback">
                       Valid last name is required.
+                    </div>
+                  </div>
+
+                  <div class="col-12" v-if="this.projects[value].homepage">
+                    <label for="homepage" class="form-label fw-bold"
+                      >Home Page</label
+                    >
+                    <div class="input-group has-validation">
+                      <a
+                        type="text"
+                        class="form-control link-blog"
+                        :value="`${this.projects[value].description}`"
+                        readonly
+                        :href="`${this.projects[value].homepage}`"
+                        target="_blank"
+                      >
+                        {{ this.projects[value].homepage }}
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="repository" class="form-label fw-bold"
+                      >Repository URL</label
+                    >
+                    <div class="input-group has-validation">
+                      <a
+                        type="text"
+                        class="form-control link-blog"
+                        :value="`${this.projects[value].description}`"
+                        readonly
+                        :href="`${this.projects[value].html_url}`"
+                        target="_blank"
+                      >
+                        {{ this.projects[value].html_url }}
+                      </a>
                     </div>
                   </div>
 
@@ -214,13 +254,14 @@ export default {
 }
 
 .image-card {
-  width: 80%;
+  width: 90%;
   object-fit: cover;
-  border-radius: 50%;
   margin: 0 auto;
+  border-radius: 10%;
 }
 
 .link-blog {
+  color: blue;
   text-decoration: none;
 }
 </style>

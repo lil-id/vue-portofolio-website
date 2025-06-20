@@ -6,6 +6,8 @@ const API_URL = "https://api.github.com/users/lil-id/repos";
 export default {
   data() {
     return {
+      page: 1,
+      perPage: 100,
       projects: [],
     };
   },
@@ -47,7 +49,7 @@ export default {
         <div class="card shadow-sm">
           <img
             class="image-card"
-            :src="this.projects[value].owner.avatar_url"
+            src="https://ih1.redbubble.net/image.4700837696.3089/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg"
             alt="profile photo"
           />
           <div class="card-body">
@@ -105,10 +107,11 @@ export default {
 }
 
 .card {
+  padding: 20px;
   margin-top: 12%;
 }
 
 .image-card {
-  padding: 10px;
+  padding: 15px 0;
 }
 </style>
